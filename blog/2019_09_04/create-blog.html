@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="黄佳荣" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Pelican, blog, elegant, Pelican, " />
+
+<meta property="og:title" content="Github Page和Pelican搭建个人博客,并使用主题Elegant "/>
+<meta property="og:url" content="/blog/2019_09_04/create-blog.html" />
+<meta property="og:description" content="前言 什么是Github Pages, Pelican和elegant? Github pages允许你存放你的静态博客, Pelican是基于Python的, 能让你迅速创建博客骨架, elegant是一款Pelican主题. 效果预览 最近想搭建个博客网站写一些东西，最终选择了在Github上写博客, 今天刚把博客搭建完, 写一下搭建的过程还有遇到的一些问题和解决方法． 个人环境: Ubuntu 18.04, Python3.6 一. 创建Github Pages 这一步很简单, 在Github上新建个repository, name可以写作username.github.io, 比如我的是huangjiarong.github.io, 然后公开创建就可以了.参考官方网站Github Pages 二. 安装Pelican 使用虚拟环境, 这里我用的virtualenvwrapper mkvirtualenv pelican 安装Pelican, 使用Markdown写文章的话还得安装Markdown pip install pelican pip …" />
+<meta property="og:site_name" content="黄佳荣的博客" />
+<meta property="og:article:author" content="黄佳荣" />
+<meta property="og:article:published_time" content="2019-09-04T00:00:00+02:00" />
+<meta property="og:article:modified_time" content="2019-09-04T00:00:00+02:00" />
+<meta name="twitter:title" content="Github Page和Pelican搭建个人博客,并使用主题Elegant ">
+<meta name="twitter:description" content="前言 什么是Github Pages, Pelican和elegant? Github pages允许你存放你的静态博客, Pelican是基于Python的, 能让你迅速创建博客骨架, elegant是一款Pelican主题. 效果预览 最近想搭建个博客网站写一些东西，最终选择了在Github上写博客, 今天刚把博客搭建完, 写一下搭建的过程还有遇到的一些问题和解决方法． 个人环境: Ubuntu 18.04, Python3.6 一. 创建Github Pages 这一步很简单, 在Github上新建个repository, name可以写作username.github.io, 比如我的是huangjiarong.github.io, 然后公开创建就可以了.参考官方网站Github Pages 二. 安装Pelican 使用虚拟环境, 这里我用的virtualenvwrapper mkvirtualenv pelican 安装Pelican, 使用Markdown写文章的话还得安装Markdown pip install pelican pip …">
+
+        <title>Github Page和Pelican搭建个人博客,并使用主题Elegant  · 黄佳荣的博客
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>黄佳荣的博客</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/categories">Categories</a></li>
+                                <li ><a href="/tags">Tags</a></li>
+                                <li ><a href="/archives">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="/blog/2019_09_04/create-blog.html"> Github Page和Pelican搭建个人博客,并使用主题Elegant  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+    <div class="span2 table-of-content">
+        <nav>
+        <h4>Contents</h4>
+        <div class="toc">
+<ul>
+<li><a href="#_1">前言</a></li>
+<li><a href="#github-pages">一. 创建Github Pages</a></li>
+<li><a href="#pelican">二. 安装Pelican</a></li>
+<li><a href="#pelican_1">三. 使用Pelican</a></li>
+<li><a href="#elegant">四. 使用Elegant主题</a><ul>
+<li><a href="#41-contents">4.1 增加Contents</a></li>
+<li><a href="#42">4.2 增加文章底部上一篇下一篇功能</a></li>
+<li><a href="#43">4.3 全局搜索功能</a></li>
+</ul>
+</li>
+<li><a href="#github-pages_1">五. 上传到Github pages</a></li>
+</ul>
+</div>
+        </nav>
+    </div>
+    <div class="span8 article-content">
+            
+            
+<h2 id="_1">前言</h2>
+<p>什么是<em>Github Pages</em>, <em>Pelican</em>和<em>elegant</em>?</p>
+<p>Github pages允许你存放你的静态博客, Pelican是基于Python的, 能让你迅速创建博客骨架, elegant是一款Pelican主题. <a href="https://huangjiarong.github.io">效果预览</a></p>
+<p>最近想搭建个博客网站写一些东西，最终选择了在Github上写博客, 今天刚把博客搭建完, 写一下搭建的过程还有遇到的一些问题和解决方法．</p>
+<p>个人环境: Ubuntu 18.04, Python3.6</p>
+<h2 id="github-pages">一. 创建Github Pages</h2>
+<p>这一步很简单, 在Github上新建个repository, name可以写作username.github.io, 比如我的是huangjiarong.github.io, 然后公开创建就可以了.参考官方网站<a href="https://pages.github.com">Github Pages</a></p>
+<h2 id="pelican">二. 安装Pelican</h2>
+<p>使用虚拟环境, 这里我用的virtualenvwrapper</p>
+<div class="highlight"><pre><span></span><span class="n">mkvirtualenv</span> <span class="n">pelican</span>
+</pre></div>
+<p>安装Pelican, 使用Markdown写文章的话还得安装Markdown</p>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pelican</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">markdown</span>
+</pre></div>
+<h2 id="pelican_1">三. 使用Pelican</h2>
+<p>新建目录<code>myBlog</code>, 然后进入目录快速创建博客</p>
+<div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">myBlog</span>
+<span class="n">cd</span> <span class="n">myBlog</span>
+<span class="n">pelican</span><span class="o">-</span><span class="n">quickstart</span>
+</pre></div>
+<p>执行完<code>pelican-quickstart</code>后, 会提示你输入一些博客的配置, 大多数可直接回车选择默认, 后续这些配置都可以在<code>pelicanconf.py</code>文件中修改. 执行完后的目录是这样的:</p>
+<div class="highlight"><pre><span></span><span class="n">blog</span><span class="o">/</span>
+<span class="err">├──</span> <span class="n">content</span>     <span class="o">#</span><span class="err">存放文章内容</span>
+<span class="err">├──</span> <span class="n">Makefile</span>
+<span class="err">├──</span> <span class="k">output</span>      <span class="o">#</span><span class="err">存放静态页面</span>
+<span class="err">├──</span> <span class="n">pelicanconf</span><span class="p">.</span><span class="n">py</span>  <span class="o">#</span><span class="err">配置文件</span>
+<span class="err">├──</span> <span class="n">publishconf</span><span class="p">.</span><span class="n">py</span>  <span class="o">#</span><span class="err">发布时的配置</span>
+<span class="err">└──</span> <span class="n">tasks</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+<p>接下来在<code>content</code>目录下写个<code>blog.md</code>文件,内容如下:</p>
+<div class="highlight"><pre><span></span><span class="n">Title</span><span class="o">:</span> <span class="n">My</span> <span class="n">First</span> <span class="n">Blog</span>
+<span class="n">Date</span><span class="o">:</span> <span class="mi">2019</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> 
+<span class="n">Category</span><span class="o">:</span> <span class="n">Blog</span>
+<span class="n">Slug</span><span class="o">:</span> <span class="n">first</span>
+
+<span class="n">My</span> <span class="n">first</span> <span class="n">blog</span><span class="o">.</span>
+</pre></div>
+<p>保存,然后执行</p>
+<div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+<p>进入<code>output</code>文件夹就可以看到pelican为我们生成的html静态文件, 执行</p>
+<div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">serve</span>
+</pre></div>
+<p>就可以在本地<code>127.0.0.1:8000</code>查看效果, 不过默认主题不好看, 后续将会采用elegant主题, 现在先修改一下配置文件, 因为我想修改一下文章的保存路径还有url, 不然的话当文章一多的话看起来<code>output</code>文件夹会很乱, 而且不好管理.</p>
+<p>在<code>pelicanconf.py</code>文件加入以下变量:</p>
+<div class="highlight"><pre><span></span><span class="n">ARTICLE_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'blog'</span><span class="p">]</span>
+<span class="n">ARTICLE_SAVE_AS</span> <span class="o">=</span> <span class="s1">'blog/{date:%Y_%m_%d}/{slug}.html'</span>
+<span class="n">ARTICLE_URL</span> <span class="o">=</span> <span class="s1">'blog/{date:%y_%m_%d}/{slug}.html'</span>
+</pre></div>
+<p>然后在<code>content</code>目录下新建<code>blog</code>目录, 以后文章写在<code>blog</code>目录下, 执行<code>make html</code>后生成的文章主页将在<code>output/blog</code>文件夹下, 按日期进行分类. url也将随之改变为<code>blog/2019_01_01/first.html</code>, 当然前提是以后在md文件中写上Date和Slug元信息.</p>
+<p>每次写文章都得<code>make html</code>然后<code>make serve</code>查看效果, <a href="http://docs.getpelican.com/en/stable/publish.html#make">Pelican官方文档</a>提供了另一种方法</p>
+<div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">devserver</span>
+</pre></div>
+<p>可以将两个命令结合起来, 这样每次修改文章后保存直接刷新浏览器就能查看效果了.</p>
+<h2 id="elegant">四. 使用Elegant主题</h2>
+<p>Pelican默认的主题不好看, 这里我使用了Elegant主题. 在github上下载主题, 在这里我把主题放到了<code>myBlog</code>目录下, 也就是<code>content</code>的同级目录</p>
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="c1">--recursive https://github.com/getpelican/pelican-themes</span>
+</pre></div>
+<p>下载完后在<code>pelicanconf.py</code>添加</p>
+<div class="highlight"><pre><span></span><span class="n">THEME</span> <span class="o">=</span> <span class="s1">'pelican-themes/elegant'</span>
+</pre></div>
+<p>然后<code>make html</code>, <code>make serve</code>就能查看主题效果了, 这里还得配置一些主题的功能.</p>
+<h3 id="41-contents">4.1 增加Contents</h3>
+<p>效果是该篇博客最左边的Contents这样, 参考<a href="https://elegant.oncrashreboot.com/how-elegant-displays-table-of-contents">elegant官方文档</a>, 首先我们需要下载一些插件, 可以从github上获取, 这里我将插件放在<code>myBlog</code>目录下, 和<code>content</code>, <code>pelican-themes</code>等目录同级, 在<code>myBlog</code>目录使用以下命令:</p>
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="c1">--recursive https://github.com/getpelican/pelican-plugins</span>
+</pre></div>
+<p>然后在<code>pelicanconf.py</code>加入:</p>
+<div class="highlight"><pre><span></span><span class="n">PLUGIN_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="ss">"pelican-plugins"</span><span class="p">]</span>
+<span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'extract_toc'</span><span class="p">,</span> <span class="p">]</span>
+</pre></div>
+<p>然后在.md文件中使用<code>[TOC]</code>就可以了.</p>
+<div class="highlight"><pre><span></span><span class="nl">Title</span><span class="p">:</span><span class="w"> </span><span class="n">My</span><span class="w"> </span><span class="k">First</span><span class="w"> </span><span class="n">Blog</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w"> </span><span class="mi">2019</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span><span class="w"> </span>
+<span class="nl">Category</span><span class="p">:</span><span class="w"> </span><span class="n">Blog</span><span class="w"></span>
+<span class="nl">Slug</span><span class="p">:</span><span class="w"> </span><span class="k">first</span><span class="w"></span>
+
+<span class="o">[</span><span class="n">TOC</span><span class="o">]</span><span class="w"></span>
+
+<span class="err">###</span><span class="w"> </span><span class="n">My</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">blog</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+<h3 id="42">4.2 增加文章底部上一篇下一篇功能</h3>
+<p>参考<a href="https://elegant.oncrashreboot.com/how-to-show-previous-and-next-article">elegant官方文档</a>, 插件我们都下载了, 在修改<code>pelicanconf.py</code>的PLUGINS就行了</p>
+<div class="highlight"><pre><span></span><span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'extract_toc'</span><span class="p">,</span> <span class="s1">'neighbors'</span><span class="p">,</span> <span class="p">]</span>
+</pre></div>
+<h3 id="43">4.3 全局搜索功能</h3>
+<p>参考<a href="https://elegant.oncrashreboot.com/add-tipue-search">elegant官方文档</a>, 修改pelicanconf.py</p>
+<div class="highlight"><pre><span></span><span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'extract_toc'</span><span class="p">,</span> <span class="s1">'neighbors'</span><span class="p">,</span> <span class="s1">'tipue_search'</span><span class="p">]</span>
+<span class="n">DIRECT_TEMPLATES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'index'</span><span class="p">,</span> <span class="s1">'authors'</span><span class="p">,</span> <span class="s1">'categories'</span><span class="p">,</span> <span class="s1">'tags'</span><span class="p">,</span> <span class="s1">'archives'</span><span class="p">,</span> <span class="s1">'search'</span><span class="p">]</span>
+</pre></div>
+<p>在这里我遇到了点问题, 首先是<code>DIRECT_TEMPLATES</code>要像我写的那样, 不然你只写了search的话, 你修改了md文件里的信息后执行完<code>make html</code>, 你会发现<code>output</code>里的<code>index.html</code>, <code>tags</code>之类的都没更新, 也就是说这些文件都不会执行更新, 因为你没写进<code>DIRECT_TEMPLATES</code>里.</p>
+<p>其次是搜索功能是依赖于google api的jquery的, 谷歌嘛在国内意味着得科学上网, 所以要用搜索功能的话我的方法是网上下载一份2.0版本的<code>jquery.min.js</code>文件, 然后放到<code>pelican-themes/elegant/static/tipuesearch</code>目录下, 然后修改<code>pelican-themes/elegant/templates/search.html</code>文件, 将里面链接到googleapi的jquery文件地址修改到我们下载的jquery文件地址:</p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">"</span><span class="cp">{{</span> <span class="nv">SITEURL</span> <span class="cp">}}</span><span class="s">/theme/tipuesearch/jquery.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+<p>这样搜索功能就完成了.</p>
+<h2 id="github-pages_1">五. 上传到Github pages</h2>
+<p>进入<code>output</code>文件夹, 依次执行</p>
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">init</span>
+<span class="n">git</span> <span class="k">add</span> <span class="p">.</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="k">add</span> <span class="n">origin</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">your_username</span><span class="o">/</span><span class="n">your_username</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">io</span>
+<span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+<span class="n">git</span> <span class="k">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s1">'first blog'</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+<p>进入 <code>https://your_username.github.io</code> 就能看到你的博客了.</p>
+
+
+            <div>
+</div>
+
+            
+            
+            <hr/>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2019-09-04T00:00:00+02:00">9月 4, 2019</time>
+
+<h4>Last Updated</h4>
+<time datetime="2019-09-04T00:00:00+02:00">9月 4, 2019</time>
+
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#pelican-ref">Pelican</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="/tags#blog-ref">blog
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags#elegant-ref">elegant
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags#pelican-ref">Pelican
+                    <span>1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="#" title="My You can add links in your config file Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-you can add links in your config file sidebar-social-links"></i></a>
+    <a href="#" title="My Another social link Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-another social link sidebar-social-links"></i></a>
+        </div>
+        </section>
+</div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

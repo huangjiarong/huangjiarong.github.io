@@ -184,7 +184,8 @@ article
   ul:not(.articles-timeline):not(.related-posts-list)
   a {
   border-bottom: thin dashed #a9a9a9;
-  color: #000;
+  /* color: #000; 原来的代码*/
+
 }
 article p a:hover,
 article ol a:hover,
