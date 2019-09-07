@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+       http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+>
+
+<url>
+ <loc>https://huangjiarong.github.io/archives</loc>
+ <priority>0.3</priority>
+ <lastmod>2019-09-07</lastmod>
+ <changefreq>weekly</changefreq>
+</url>
+
+<url>
+ <loc>https://huangjiarong.github.io/blog/2019_09_04/create-blog.html</loc>
+ <priority>0.3</priority>
+ <lastmod>2019-09-07</lastmod>
+ <changefreq>weekly</changefreq>
+</url>
+
+<url>
+ <loc>https://huangjiarong.github.io/categories</loc>
+ <priority>0.3</priority>
+ <lastmod>2019-09-07</lastmod>
+ <changefreq>weekly</changefreq>
+</url>
+
+<url>
+ <loc>https://huangjiarong.github.io/</loc>
+ <priority>0.3</priority>
+ <lastmod>2019-09-07</lastmod>
+ <changefreq>weekly</changefreq>
+</url>
+
+<url>
+ <loc>https://huangjiarong.github.io/tags</loc>
+ <priority>0.3</priority>
+ <lastmod>2019-09-07</lastmod>
+ <changefreq>weekly</changefreq>
+</url>
+
+</urlset>
