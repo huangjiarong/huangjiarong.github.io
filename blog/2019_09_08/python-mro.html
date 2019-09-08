@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="黄佳荣" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Python多继承, C3线性化算法, Python, " />
+
+<meta property="og:title" content="对Python中多继承的MRO的理解 "/>
+<meta property="og:url" content="/blog/2019_09_08/python-mro.html" />
+<meta property="og:description" content="对Python中多继承关系的方法解析顺序(MRO)的理解" />
+<meta property="og:site_name" content="黄佳荣的博客" />
+<meta property="og:article:author" content="黄佳荣" />
+<meta property="og:article:published_time" content="2019-09-08T00:00:00+02:00" />
+<meta property="og:article:modified_time" content="2019-09-08T00:00:00+02:00" />
+<meta name="twitter:title" content="对Python中多继承的MRO的理解 ">
+<meta name="twitter:description" content="对Python中多继承关系的方法解析顺序(MRO)的理解">
+
+        <title>对Python中多继承的MRO的理解  · 黄佳荣的博客
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>黄佳荣的博客</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/categories">Categories</a></li>
+                                <li ><a href="/tags">Tags</a></li>
+                                <li ><a href="/archives">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="/blog/2019_09_08/python-mro.html"> 对Python中多继承的MRO的理解  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+    <div class="span2 table-of-content">
+        <nav>
+        <h4>Contents</h4>
+        <div class="toc">
+<ul>
+<li><a href="#mro">什么是函数解析顺序(MRO)?</a></li>
+<li><a href="#pythonmro">Python各版本中的MRO</a></li>
+<li><a href="#dfsbfs">先谈谈DFS和BFS</a></li>
+<li><a href="#c3">C3线性化算法</a></li>
+<li><a href="#c3_1">C3线性化算法的计算过程</a></li>
+<li><a href="#wiki">来自wiki的更为复杂的继承例子</a></li>
+</ul>
+</div>
+        </nav>
+    </div>
+    <div class="span8 article-content">
+            
+            
+<h3 id="mro">什么是函数解析顺序(MRO)?</h3>
+<p>方法解析顺序(MRO, Method-Resolution-Roder)定义了Python多继承的情况下, 解释器查找函数解析的具体顺序.</p>
+<h3 id="pythonmro">Python各版本中的MRO</h3>
+<p>在2.2版本以前只有经典类(Old-style Class), 类使用深度优先搜索(DFS, Depth-First-Search). </p>
+<p>在2.2版本引入新式类(New-style Class), 经典类还是使用DFS, 新式类则使用广度优先算法(BFS, Breadth-First-Search), BFS仅在2.2版本中使用过.</p>
+<p>在2.2版本以后python 3版本以前, 新式类采用C3线性化算法, 经典类采用深度优先算法. </p>
+<p>python 3以后类都是新式类, 使用C3线性化算法. </p>
+<p><code>总结: 经典类都是DFS算法, 新式类除了在2.2版本中使用过BFS算法, 其他版本都是C3算法.</code></p>
+<h3 id="dfsbfs">先谈谈DFS和BFS</h3>
+<p>先看看以下菱形继承关系: </p>
+<p><img alt="继承关系图" src="/blog/images/2019-09-08-mro1.png"/></p>
+<p>B和C继承自A, D继承自B, C. 代码如下:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#python2中</span>
+<span class="n">Class</span> <span class="n">A</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">who</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s1">'I am class A'</span>
+
+<span class="n">Class</span> <span class="n">B</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">Class</span> <span class="n">C</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">who</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s1">'I am class C'</span>
+
+<span class="n">Class</span> <span class="n">D</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">D</span><span class="p">()</span>
+<span class="n">d</span><span class="o">.</span><span class="n">who</span><span class="p">()</span> <span class="c1">#结果是'I am class A'</span>
+</pre></div>
+</td></tr></table>
+<p>按照DFS算法, 解析顺序是 <code>D-&gt;B-&gt;A-&gt;C-&gt;A</code>, 之前解析过的类A不会再解析, 所以最终是 <code>D-&gt;B-&gt;A-&gt;C</code>. 这样会出现什么问题呢? 你可以在C类中重写其父类A中的方法, 但是你永远访问不到你重写的访问, 因为解析到A就找到了, 所以这就是经典类使用DFS算法的缺陷. </p>
+<p>再来说说2.2版本中新式类使用的BFS算法, 还是根据上图的菱形继承关系, 解析顺序是 <code>D-&gt;B-&gt;C-&gt;A</code>, BFS算法解决了经典类中DFS子类无法重写父类的问题, 但是这又引起了另一个问题, 看看正常的继承方式: </p>
+<p><img alt="正常继承关系图" src="/blog/images/2019-09-08-mro2.png"/> </p>
+<p>代码如下:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#环境为python2.2</span>
+<span class="n">Class</span> <span class="n">A</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">who</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s1">'I am class A'</span>
+
+<span class="n">Class</span> <span class="n">B</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">Class</span> <span class="n">C</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">Class</span> <span class="n">D</span><span class="p">(</span><span class="n">B</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">who</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s1">'I am class D'</span>
+
+<span class="n">Class</span> <span class="n">E</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">e</span> <span class="o">=</span> <span class="n">E</span><span class="p">()</span>
+<span class="n">e</span><span class="o">.</span><span class="n">who</span><span class="p">()</span> <span class="c1">#结果应该是'I am class D', 这里我没装2.2版本的, 但应该是这样, 有兴趣的可以测试下.</span>
+</pre></div>
+</td></tr></table>
+<p>我们在类A和类D中实现同一个方法. 按照2.2版本新式类的BFS算法, 解析顺序是<code>E-&gt;C-&gt;D-&gt;A-&gt;B</code>. 这里A类是C类的唯一父类, 这种情况应该从唯一父类中找, 但BFS算法却先找到D类中的方法, 这样违背了单调性原则, 所有BFS仅存在于2.2一个版本.</p>
+<h3 id="c3">C3线性化算法</h3>
+<p>Python在2.3及之后版本的新式类都使用了C3线性化算法(C3 linearization), C3算法解决了DFS和BFS所不能解决的问题, 下面我将详细谈谈C3算法. 这里先给不想看算法计算过程的小伙伴一个方便的C3算法解析过程: </p>
+<p>按照上面的菱形继承关系图, 我们先用深度优先遍历得到MRO为 <code>D-&gt;B-&gt;A-&gt;C-&gt;A(先别把最后的A去掉)</code>, 然后我们看到 <code>D-&gt;B-&gt;A-&gt;C-&gt;A</code>中的第一个A在后面出现过, 我们就把这个A去掉, 最终的MRO就是 `D-&gt;B-&gt;C-&gt;A'. 这个就是C3算法得出的MRO. </p>
+<p>也就是说, 对于多继承关系, 先用深度优先遍历(先不把解析过的去掉)得到一个MRO, 然后再根据这个MRO从左往右遍历, 只要当前的类出现在后面, 我们就把当前的类删掉, 也就是说对于重复出现的类我们只保留它的最后一个位置, 最终得到的就是C3算法得出的MRO了.</p>
+<h3 id="c3_1">C3线性化算法的计算过程</h3>
+<p>下面讲讲C3算法的计算过程, 参考 <a href="http://kaiyuan.me/2016/04/27/C3_linearization/">C3线性化算法</a>. </p>
+<p>介绍算法前首先约定需要使用的符号. 用 <span class="math">\([C_1C_2C_3\cdots C_N]\)</span> 来表示包含N个类的列表, 并令 </p>
+<div class="math">$$ head([C_1C_2C_3 \cdots C_N]) = [C_1] %就是取第一个 $$</div>
+<div class="math">$$ tail([C_1C_2C_3 \cdots C_N]) = [C_2C_3\cdots C_N] %就是去掉第一个 $$</div>
+<div class="math">$$ [C_1] + [C_2C_3 \cdots C_N] = [C_1C_2 \cdots C_N] $$</div>
+<p>也就是<span class="math">\(head()\)</span>取里面第一个, <span class="math">\(tail\)</span>取除了第一个. </p>
+<p>假设类<span class="math">\(C\)</span>继承自父类<span class="math">\(B_1,\cdots,B_N\)</span>, 那么根据C3线性化算法, 类<span class="math">\(C\)</span>的解析列表通过以下公式决定: </p>
+<div class="math">$$ L[C(B_1B_2 \cdots B_N)] = [C] + merge(L[B_1], L[B_2], \cdots, L[B_N], B_1, B_2, \cdots , B_N) $$</div>
+<p>说明一下, <span class="math">\(merge\)</span>公式左部分是类<span class="math">\(C\)</span>的所有父类的解析列表(<span class="math">\(L[B_1]\)</span>表示类<span class="math">\(B_1\)</span>的解析列表), 也就是每个父类的解析列表. 右部分是类<span class="math">\(C\)</span>的所有父类. 所以这个公式表明<span class="math">\(C\)</span>的解析列表是通过对其父类的解析列表和其父类做<span class="math">\(merge\)</span>操作得到的, 那么接下来就介绍重点的<span class="math">\(merge\)</span>, 分为以下步骤: </p>
+<ol>
+<li>取<span class="math">\(merge\)</span>中的第一个列表记为当前列表<span class="math">\(K\)</span>. (相当于取类C的第一个父类的解析列表)</li>
+<li>令<span class="math">\(h = head(K)\)</span>, 如果<span class="math">\(h\)</span>没有出现在其他任何列表的<span class="math">\(tail\)</span>中,就将其加入<span class="math">\(C\)</span>的解析列表中,并将其从<span class="math">\(merge\)</span>中所有地方移除(包括列表和类), 之后重复步骤2.</li>
+<li>否则,设置<span class="math">\(K\)</span>为<span class="math">\(merge\)</span>中的下一个列表, 并重复2中的操作.</li>
+<li>如果<span class="math">\(merge\)</span>中所有类都被移除, 则创建类成功; 如果不能找到下一个<span class="math">\(h\)</span>, 则拒绝创建类并抛出异常.</li>
+</ol>
+<p>举例说明上述步骤, 假设有以下的类继承关系:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#python3环境</span>
+<span class="c1">#交叉继承, 会抛异常</span>
+<span class="k">class</span> <span class="nc">X</span><span class="p">:</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">Y</span><span class="p">:</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">F</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span> <span class="k">pass</span>
+</pre></div>
+</td></tr></table>
+<p>首先有<span class="math">\(L[X] = [X]\)</span>, <span class="math">\(L[Y] = [Y]\)</span>, 然后可以得到: </p>
+<div class="math">$$ L[A] = [A] + merge(L[X], L[Y], X, Y) = [A, X, Y] $$</div>
+<div class="math">$$ L[B] = [B] + merge(L[Y], L[X], Y, X) = [B, Y, X] $$</div>
+<p>根据公式: </p>
+<div class="math">$$ L[F(A, B)] = [F] + merger(L[A], L[B], A, B) = [F] + merge([A, X, Y], [B, Y, X], A, B) $$</div>
+<p>按1, 2步骤有<span class="math">\(K = L[A]\)</span>, <span class="math">\(h = head(L[A]) = A\)</span>, 判断到<span class="math">\(A\)</span>不在其他任何列表的<span class="math">\(tail\)</span>中(<span class="math">\(tail([B, Y, X]) = [Y, X]\)</span>), 于是我们将<span class="math">\(A\)</span>加入到类<span class="math">\(F\)</span>的解析列表中(同时将A从所有列表中删除), 得到: </p>
+<div class="math">$$ L[F] = [F, A] + merge([X, Y], [B, Y, X], B) $$</div>
+<p>按照步骤2, 此时<span class="math">\(K = L[A] = L[X, Y]\)</span>(上一步已将A移除), <span class="math">\(h = head(K) = X\)</span>, 此时发现<span class="math">\(X\)</span>不满足要求 (<span class="math">\(X\)</span>出现在<span class="math">\(tail([B, Y, X]) = [Y, X]\)</span>中), 根据步骤3令<span class="math">\(K = [B, Y, X]\)</span>, <span class="math">\(h = head(K) = B\)</span>, <span class="math">\(B\)</span>满足要求因此将<span class="math">\(B\)</span>加入到C的解析列表中并将其中<span class="math">\(merge\)</span>中所有地方移除, 得到:</p>
+<div class="math">$$ L[F] = [F, A, B] + merge([X, Y], [Y, X]) $$</div>
+<p>继续步骤2, 当前<span class="math">\(K = [Y, X]\)</span>(上一步已将B删除), <span class="math">\(h = head(K) = Y\)</span>, 显然<span class="math">\(Y\)</span>不满足要求, 由于<span class="math">\(merge\)</span>没有下一个列表了, 所以无法继续选择<span class="math">\(h\)</span>, 根据步骤4, 类F创建失败并抛出异常.</p>
+<h3 id="wiki">来自wiki的更为复杂的继承例子</h3>
+<p><img alt="wiki上的图" src="/blog/images/2019-09-08-wiki.png"/></p>
+<p>代码如图:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#python3环境</span>
+<span class="k">class</span> <span class="nc">O</span><span class="p">:</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">O</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">O</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">O</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">O</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">E</span><span class="p">(</span><span class="n">O</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">K1</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">K3</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">K2</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">E</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">Z</span><span class="p">(</span><span class="n">K1</span><span class="p">,</span> <span class="n">K3</span><span class="p">,</span> <span class="n">K2</span><span class="p">):</span> <span class="k">pass</span>
+<span class="k">print</span><span class="p">(</span><span class="n">Z</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">)</span> <span class="c1">#输出的mro与下面结论一样</span>
+</pre></div>
+</td></tr></table>
+<p>按照我们上面的C3算法解析过程, 先深度遍历再取重复的类最后的位置, Z的MRO先深度遍历是: </p>
+<p><code>Z-&gt;K1-&gt;C-&gt;O-&gt;A-&gt;O-&gt;B-&gt;O-&gt;K3-&gt;A-&gt;O-&gt;D-&gt;O-&gt;K2-&gt;B-&gt;O-&gt;D-&gt;O-&gt;E-&gt;O</code>.</p>
+<p>对于重复出现的类只保存最后的位置, 所以最终Z的MRO顺序应该是:</p>
+<p><code>Z-&gt;K1-&gt;C-&gt;K3-&gt;A-&gt;K2-&gt;B-&gt;D-&gt;E-&gt;O</code> </p>
+<p>我们再通过计算过程验证下看看是不是这样:</p>
+<div class="math">$$ L[O] = [O] $$</div>
+<div class="math">$$ L[C(O)] = [C] + merge(L[O], O) = [C, O] $$</div>
+<div class="math">$$ L[A(O)] = [A] + merge(L[O], O) = [A, O] $$</div>
+<div class="math">$$ L[B(O)] = [B] + merge(L[O], O) = [B, O] $$</div>
+<div class="math">$$ L[D(O)] = [D] + merge(L[O], O) = [D, O] $$</div>
+<div class="math">$$ L[E(O)] = [E] + merge(L[O], O) = [E, O] $$</div>
+<p>上面的结果比较容易得到.</p>
+<div class="math">$$ 
+\begin{align}
+L[K1(C, A, B)] &amp;= [K1] + merge(L[C], L[A], L[B], C, A, B) \\
+    &amp;= [K1] + merge([C, O], [A, O], [B, O], C, A, B)\\
+    &amp;= [K1, C] + merge([O], [A, O], [B, O], A, B)\\
+    &amp;= [K1, C, A] + merge([O], [O], [B, O], B)\\
+    &amp;= [K1, C, A, B] + merge([O], [O], [O])\\
+    &amp;= [K1, C, A, B, O]
+\end{align}
+$$</div>
+<div class="math">$$ 
+\begin{align}
+L[K3(A, D)] &amp;= [K3] + merge(L[A], L[D], A, D) \\
+            &amp;= [K3] + merge(L[A, O], L[D, O], A, D)\\
+            &amp;= [K3, A] + merge([O], L[D, O], D)\\
+            &amp;= [K3, A, D] + merge([O], [O])\\
+            &amp;= [K3, A, D, O]
+\end{align}
+$$</div>
+<div class="math">$$ 
+\begin{align}
+L[K2(B, D, E)] &amp;= [K2] + merge(L[B], L[D], L[E], B, D, E) \\
+    &amp;= [K2] + merge([B, O], [D, O], [E, O], B, D, E)\\
+    &amp;= [K2, B] + merge([O], [D, O], [E, O], D, E)\\
+    &amp;= [K2, B, D] + merge([O], [O], [E, O], E)\\
+    &amp;= [K2, B, D, E] + merge([O], [O], [O])\\
+    &amp;= [K2, B, D, E, O]
+\end{align}
+$$</div>
+<p>所以最终Z的MRO列表为: </p>
+<div class="math">$$ 
+\begin{align}
+L[Z(K1, K3, K2] &amp;= [Z] + merge(L[K1], L[K3], L[K2], K1, K3, K2)\\
+    &amp;= [Z] + merge([K1, C, A, B, O], [K3, A, D, O], [K2, B, D, E, O], K1, K3, K2) \\
+    &amp;= [Z, K1] + merge([C, A, B, O], [K3, A, D, O], [K2, B, D, E, O], K3, K2)\\
+    &amp;= [Z, K1, C] + merge([A, B, O], [K3, A, D, O], [K2, B, D, E, O], K3, K2)\\
+    &amp;= [Z, K1, C, K3] + merge([A, B, O], [A, D, O], [K2, B, D, E, O], K2)\\
+    &amp;= [Z, K1, C, K3, A] + merge([B, O], [D, O], [K2, B, D, E, O], K2)\\
+    &amp;= [Z, K1, C, K3, A, K2] + merge([B, O], [D, O], [B, D, E, O])\\
+    &amp;= [Z, K1, C, K3, A, K2, B] + merge([O], [D, O], [D, E, O])\\
+    &amp;= [Z, K1, C, K3, A, K2, B, D] + merge([O], [O], [E, O])\\
+    &amp;= [Z, K1, C, K3, A, K2, B, D, E] + merge([O], [O], [O])\\
+    &amp;= [Z, K1, C, K3, A, K2, B, D, E, O]
+\end{align}
+$$</div>
+<p>最终得到的结果与我们上面得出的一致.</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'ForestGreen ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+
+            <div>
+</div>
+
+            
+            
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/blog/2019_09_04/create-blog.html" title="Previous: Github Page和Pelican搭建个人博客,并使用主题Elegant">Github Page和Pelican搭建个人博客,并使用主题Elegant</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2019-09-08T00:00:00+02:00">9月 8, 2019</time>
+
+<h4>Last Updated</h4>
+<time datetime="2019-09-08T00:00:00+02:00">9月 8, 2019</time>
+
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#python-ref">Python</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="/tags#c3xian-xing-hua-suan-fa-ref">C3线性化算法
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags#pythonduo-ji-cheng-ref">Python多继承
+                    <span>1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="#" title="My You can add links in your config file Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-you can add links in your config file sidebar-social-links"></i></a>
+    <a href="#" title="My Another social link Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-another social link sidebar-social-links"></i></a>
+        </div>
+        </section>
+</div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
