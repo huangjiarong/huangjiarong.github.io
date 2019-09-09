@@ -1,0 +1,4 @@
+urls.txt
+
+#用于将url.txt推送到百度的脚本
+post.py
