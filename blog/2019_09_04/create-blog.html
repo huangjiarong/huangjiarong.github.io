@@ -152,7 +152,7 @@
 <span class="n">ARTICLE_URL</span> <span class="o">=</span> <span class="s1">'blog/{date:%y_%m_%d}/{slug}.html'</span>
 </pre></div>
 <p>然后在<code>content</code>目录下新建<code>blog</code>目录, 以后文章写在<code>blog</code>目录下, 执行<code>make html</code>后生成的文章主页将在<code>output/blog</code>文件夹下, 按日期进行分类. url也将随之改变为<code>blog/2019_01_01/first.html</code>, 当然前提是以后在md文件中写上Date和Slug元信息.</p>
-<p>每次写文章都得<code>make html</code>然后<code>make serve</code>查看效果, <a href="http://docs.getpelican.com/en/stable/publish.html#make">Pelican官方文档</a>提供了另一种方法</p>
+<p>每次写文章都得<code>make html</code>然后<code>make serve</code>查看效果, <a href="https://docs.getpelican.com/en/stable/publish.html#make">Pelican官方文档</a>提供了另一种方法</p>
 <div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">devserver</span>
 </pre></div>
 <p>可以将两个命令结合起来, 这样每次修改文章后保存直接刷新浏览器就能查看效果了.</p>
