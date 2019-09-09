@@ -23,8 +23,10 @@
 
         <title>对Python中多继承的MRO的理解  · 黄佳荣的博客
 </title>
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+        <!-- <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"> -->
+        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
@@ -93,12 +95,14 @@
             
 <h3 id="mro">什么是函数解析顺序(MRO)?</h3>
 <p>方法解析顺序(MRO, Method-Resolution-Roder)定义了Python多继承的情况下, 解释器查找函数解析的具体顺序.</p>
+<hr/>
 <h3 id="pythonmro">Python各版本中的MRO</h3>
 <p>在2.2版本以前只有经典类(Old-style Class), 类使用深度优先搜索(DFS, Depth-First-Search). </p>
 <p>在2.2版本引入新式类(New-style Class), 经典类还是使用DFS, 新式类则使用广度优先算法(BFS, Breadth-First-Search), BFS仅在2.2版本中使用过.</p>
 <p>在2.2版本以后python 3版本以前, 新式类采用C3线性化算法, 经典类采用深度优先算法. </p>
 <p>python 3以后类都是新式类, 使用C3线性化算法. </p>
 <p><code>总结: 经典类都是DFS算法, 新式类除了在2.2版本中使用过BFS算法, 其他版本都是C3算法.</code></p>
+<hr/>
 <h3 id="dfsbfs">先谈谈DFS和BFS</h3>
 <p>先看看以下菱形继承关系: </p>
 <p><img alt="菱形继承关系图" src="/blog/images/2019-09-08-mro1.png"/></p>
@@ -184,10 +188,12 @@
 </pre></div>
 </td></tr></table>
 <p>我们在类A和类D中实现同一个方法. 按照2.2版本新式类的BFS算法, 解析顺序是<code>E-&gt;C-&gt;D-&gt;A-&gt;B</code>. 这里A类是C类的唯一父类, 这种情况应该从唯一父类中找, 但BFS算法却先找到D类中的方法, 这样违背了单调性原则, 所有BFS仅存在于2.2一个版本.</p>
+<hr/>
 <h3 id="c3">C3线性化算法</h3>
 <p>Python在2.3及之后版本的新式类都使用了C3线性化算法(C3 linearization), C3算法解决了DFS和BFS所不能解决的问题, 下面我将详细谈谈C3算法. 这里先给不想看算法计算过程的小伙伴一个方便的C3算法解析过程: </p>
-<p>按照上面的菱形继承关系图, 我们先用深度优先遍历得到MRO为 <code>D-&gt;B-&gt;A-&gt;C-&gt;A(先别把最后的A去掉)</code>, 然后我们看到 <code>D-&gt;B-&gt;A-&gt;C-&gt;A</code>中的第一个A在后面出现过, 我们就把这个A去掉, 最终的MRO就是 `D-&gt;B-&gt;C-&gt;A'. 这个就是C3算法得出的MRO. </p>
+<p>按照上面的菱形继承关系图, 我们先用深度优先遍历得到MRO为 <code>D-&gt;B-&gt;A-&gt;C-&gt;A(先别把最后的A去掉)</code>, 然后我们看到 <code>D-&gt;B-&gt;A-&gt;C-&gt;A</code>中的第一个A在后面出现过, 我们就把这个A去掉, 最终的MRO就是 <code>D-&gt;B-&gt;C-&gt;A</code>. 这个就是C3算法得出的MRO. </p>
 <p>也就是说, 对于多继承关系, 先用深度优先遍历(先不把解析过的去掉)得到一个MRO, 然后再根据这个MRO从左往右遍历, 只要当前的类出现在后面, 我们就把当前的类删掉, 也就是说对于重复出现的类我们只保留它的最后一个位置, 最终得到的就是C3算法得出的MRO了.</p>
+<hr/>
 <h3 id="c3_1">C3线性化算法的计算过程</h3>
 <p>下面讲讲C3算法的计算过程, 参考 <a href="http://kaiyuan.me/2016/04/27/C3_linearization/">C3线性化算法</a>. </p>
 <p>介绍算法前首先约定需要使用的符号. 用 <span class="math">\([C_1C_2C_3\cdots C_N]\)</span> 来表示包含N个类的列表, 并令 </p>
@@ -230,6 +236,7 @@
 <p>按照步骤2, 此时<span class="math">\(K = L[A] = L[X, Y]\)</span>(上一步已将A移除), <span class="math">\(h = head(K) = X\)</span>, 此时发现<span class="math">\(X\)</span>不满足要求 (<span class="math">\(X\)</span>出现在<span class="math">\(tail([B, Y, X]) = [Y, X]\)</span>中), 根据步骤3令<span class="math">\(K = [B, Y, X]\)</span>, <span class="math">\(h = head(K) = B\)</span>, <span class="math">\(B\)</span>满足要求因此将<span class="math">\(B\)</span>加入到C的解析列表中并将其中<span class="math">\(merge\)</span>中所有地方移除, 得到:</p>
 <div class="math">$$ L[F] = [F, A, B] + merge([X, Y], [Y, X]) $$</div>
 <p>继续步骤2, 当前<span class="math">\(K = [Y, X]\)</span>(上一步已将B删除), <span class="math">\(h = head(K) = Y\)</span>, 显然<span class="math">\(Y\)</span>不满足要求, 由于<span class="math">\(merge\)</span>没有下一个列表了, 所以无法继续选择<span class="math">\(h\)</span>, 根据步骤4, 类F创建失败并抛出异常.</p>
+<hr/>
 <h3 id="wiki">来自wiki的更为复杂的继承例子</h3>
 <p><img alt="wiki上的图" src="/blog/images/2019-09-08-wiki.png"/></p>
 <p>代码如图:</p>
@@ -390,6 +397,7 @@ $$</div>
             <nav>
             <ul class="articles-timeline">
                 <li class="previous-article">« <a href="/blog/2019_09_04/create-blog.html" title="Previous: Github Page和Pelican搭建个人博客,并使用主题Elegant">Github Page和Pelican搭建个人博客,并使用主题Elegant</a></li>
+                <li class="next-article"><a href="/blog/2019_09_09/python-super.html" title="Next: 对Python中super的理解">对Python中super的理解</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -410,7 +418,7 @@ $$</div>
                     <span>1</span>
 </a></li>
                 <li><a href="/tags#pythonduo-ji-cheng-ref">Python多继承
-                    <span>1</span>
+                    <span>2</span>
 </a></li>
             </ul>
 <h4>Contact</h4>
@@ -435,8 +443,10 @@ $$</div>
         Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
         Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
     </div>
-</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+</footer>            <!--<script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script> -->
+        <script src="/theme/js/jquery.min.js"></script>
+        <script src="/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

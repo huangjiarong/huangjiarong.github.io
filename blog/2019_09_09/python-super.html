@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="黄佳荣" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Python多继承, Python, " />
+
+<meta property="og:title" content="对Python中super的理解 "/>
+<meta property="og:url" content="/blog/2019_09_09/python-super.html" />
+<meta property="og:description" content="对Python中super的理解" />
+<meta property="og:site_name" content="黄佳荣的博客" />
+<meta property="og:article:author" content="黄佳荣" />
+<meta property="og:article:published_time" content="2019-09-09T00:00:00+02:00" />
+<meta property="og:article:modified_time" content="2019-09-09T00:00:00+02:00" />
+<meta name="twitter:title" content="对Python中super的理解 ">
+<meta name="twitter:description" content="对Python中super的理解">
+
+        <title>对Python中super的理解  · 黄佳荣的博客
+</title>
+        <!-- <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"> -->
+        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>黄佳荣的博客</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/categories">Categories</a></li>
+                                <li ><a href="/tags">Tags</a></li>
+                                <li ><a href="/archives">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="/blog/2019_09_09/python-super.html"> 对Python中super的理解  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+    <div class="span2 table-of-content">
+        <nav>
+        <h4>Contents</h4>
+        <div class="toc">
+<ul>
+<li><a href="#_1">前言</a></li>
+<li><a href="#_2">单继承</a></li>
+<li><a href="#_3">多继承</a></li>
+<li><a href="#super">super其实是个类</a></li>
+</ul>
+</div>
+        </nav>
+    </div>
+    <div class="span8 article-content">
+            
+            
+<h3 id="_1">前言</h3>
+<p>以前一直以为super就是调用父类方法嘛, 直到最近回顾了Python的MRO才发觉没这么简单, super并不是调用父类的方法, 而是调用了MRO中下一个类的方法. </p>
+<p>环境: Python3.6</p>
+<hr/>
+<h3 id="_2">单继承</h3>
+<p>在单继承中<code>super</code>就像我以前理解的那样, 主要用来调用父类方法:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'self is {0} @A.add'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="n">m</span>
+
+
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'self is {0} @B.add'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">3</span>
+
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">()</span>
+<span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+<p>执行结果如下:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="bp">self</span> <span class="ow">is</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">B</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x106c49b38</span><span class="o">&gt;</span> <span class="nd">@B.add</span>
+<span class="bp">self</span> <span class="ow">is</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">B</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x106c49b38</span><span class="o">&gt;</span> <span class="nd">@A.add</span>
+<span class="mi">8</span>
+</pre></div>
+</td></tr></table>
+<p>之前在别的教程看到说<code>super</code>会找到当前类的父类, 然后将实例转换为父类实例, 但是从上面例子可以看到并不是这样, 实例一直都是当前类的实例, 所以结果是<code>8</code>而不是<code>7</code></p>
+<hr/>
+<h3 id="_3">多继承</h3>
+<p>我们用菱形继承关系来举例说明多继承中的<code>super</code>:</p>
+<p><img alt="菱形继承关系图" src="/blog/images/2019-09-09-super01.png"/></p>
+<p>代码如下:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'self is {0} @A.add'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="n">m</span>
+
+
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'self is {0} @B.add'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">3</span>
+
+
+<span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'self is {0} @C.add'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">4</span>
+
+
+<span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'self is {0} @D.add'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">5</span>
+
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">D</span><span class="p">()</span>
+<span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+<p>这次的输出如下:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="bp">self</span> <span class="ow">is</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">D</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x10ce10e48</span><span class="o">&gt;</span> <span class="nd">@D.add</span>
+<span class="bp">self</span> <span class="ow">is</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">D</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x10ce10e48</span><span class="o">&gt;</span> <span class="nd">@B.add</span>
+<span class="bp">self</span> <span class="ow">is</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">D</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x10ce10e48</span><span class="o">&gt;</span> <span class="nd">@C.add</span>
+<span class="bp">self</span> <span class="ow">is</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">D</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x10ce10e48</span><span class="o">&gt;</span> <span class="nd">@A.add</span>
+<span class="mi">19</span>
+</pre></div>
+</td></tr></table>
+<p>让我们来看看这是怎么发生的, 为什么结果是<code>19</code>. </p>
+<p>首先要明确的是:</p>
+<ul>
+<li>类D的MRO为<code>D-&gt;B-&gt;C-&gt;A'</code>, 可以通过<code>D.__mro__</code>查看</li>
+<li>super并不会进行实例转换, 这里的实例一直是类D的实例, 上面输出可以看出. 既然实例一直没变, 那么A, B, C类add方法中的self.n其实也就是d.n了.</li>
+<li>python3中D类的<code>super().add(m)</code>等价于<code>super(D, self).add(m)</code>, 这点下一小节会用到.</li>
+</ul>
+<p>当我们调用<code>d.add(2)</code>, 执行到D中add方法中的super的时候, super会通过MRO找到类D的下一类, 也就是类B. 执行到B中add方法中的super, super又通过原先的那个MRO(因为实例一直是类D的实例, 所以也就是类D的MRO)找到类B的下一个类(<strong>这里要注意的是super并不是找到B的父类</strong>), 也就是类C, 依次类推, 最终结果便是<code>19</code>了</p>
+<hr/>
+<h3 id="super">super其实是个类</h3>
+<p>没错, super是个类而不是函数, 当我们调用<code>super()</code>的时候实际上是实例化了一个<code>super</code>类, 它包含了两个重要的信息: 一个MRO以及MRO中的一个类. <code>super()</code>接收两个参数, 当我们这样调用时:</p>
+<div class="highlight"><pre><span></span><span class="n">super</span><span class="p">(</span><span class="n">a_type</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+</pre></div>
+<p>实例化的super类会保存<code>type(obj)</code>的MRO, 同时<code>isinstance(obj, a_type)==True</code>判断obj为a_type类型(想象一下, 如果是False那么type(obj)的MRO中根本找不到a_type), 然后从MRO中a_type后面开始搜索, 用上面的代码举例说明一下可能会更方便理解. </p>
+<p>当我们执行到<code>类D</code>的<code>super().add(m)</code>的时候(其实等价于<code>super(D, self).add(m)</code>), 实例化的super类会保存type(self)的MRO(type(self)==Class D, D的MRO为<code>D-&gt;B-&gt;C-&gt;A</code>), 同时<code>isinstance(self, D)==True</code>, 然后从MRO中D后面可以搜索, 也就是<code>B-&gt;C-A</code>.</p>
+<p>super还可以这样调用:</p>
+<div class="highlight"><pre><span></span><span class="n">super</span><span class="p">(</span><span class="n">type1</span><span class="p">,</span> <span class="n">type2</span><span class="p">)</span>
+</pre></div>
+<p>super类会保存type2的MRO, 然后从MRO中type1后面可以搜索, 同时<code>issubclass(type2, type1)==True</code>判断type2是否是type1的子类, 按上面的代码举个例子, 调用:</p>
+<div class="highlight"><pre><span></span><span class="n">super</span><span class="p">(</span><span class="k">C</span><span class="p">,</span> <span class="n">D</span><span class="p">).</span><span class="k">add</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+</pre></div>
+<p>D的MRO为<code>D-&gt;B-&gt;C-&gt;A</code>, 那么上述调用只会从<code>C</code>后面找, 也就是只能从<code>A</code>中找</p>
+
+
+            <div>
+</div>
+
+            
+            
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/blog/2019_09_08/python-mro.html" title="Previous: 对Python中多继承的MRO的理解">对Python中多继承的MRO的理解</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2019-09-09T00:00:00+02:00">9月 9, 2019</time>
+
+<h4>Last Updated</h4>
+<time datetime="2019-09-09T00:00:00+02:00">9月 9, 2019</time>
+
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#python-ref">Python</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="/tags#pythonduo-ji-cheng-ref">Python多继承
+                    <span>2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="#" title="My You can add links in your config file Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-you can add links in your config file sidebar-social-links"></i></a>
+    <a href="#" title="My Another social link Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-another social link sidebar-social-links"></i></a>
+        </div>
+        </section>
+</div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
+    </div>
+</footer>            <!--<script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script> -->
+        <script src="/theme/js/jquery.min.js"></script>
+        <script src="/theme/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

@@ -23,8 +23,10 @@
 
         <title>Github Page和Pelican搭建个人博客,并使用主题Elegant  · 黄佳荣的博客
 </title>
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+        <!-- <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"> -->
+        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
@@ -101,8 +103,10 @@
 <p>Github pages允许你存放你的静态博客, Pelican是基于Python的, 能让你迅速创建博客骨架, elegant是一款Pelican主题. <a href="https://huangjiarong.github.io">效果预览</a></p>
 <p>最近想搭建个博客网站写一些东西，最终选择了在Github上写博客, 今天刚把博客搭建完, 写一下搭建的过程还有遇到的一些问题和解决方法．</p>
 <p>个人环境: Ubuntu 18.04, Python3.6</p>
+<hr/>
 <h2 id="github-pages">一. 创建Github Pages</h2>
 <p>这一步很简单, 在Github上新建个repository, name可以写作username.github.io, 比如我的是huangjiarong.github.io, 然后公开创建就可以了.参考官方网站<a href="https://pages.github.com">Github Pages</a></p>
+<hr/>
 <h2 id="pelican">二. 安装Pelican</h2>
 <p>使用虚拟环境, 这里我用的virtualenvwrapper</p>
 <div class="highlight"><pre><span></span><span class="n">mkvirtualenv</span> <span class="n">pelican</span>
@@ -111,6 +115,7 @@
 <div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pelican</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">markdown</span>
 </pre></div>
+<hr/>
 <h2 id="pelican_1">三. 使用Pelican</h2>
 <p>新建目录<code>myBlog</code>, 然后进入目录快速创建博客</p>
 <div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">myBlog</span>
@@ -151,6 +156,7 @@
 <div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">devserver</span>
 </pre></div>
 <p>可以将两个命令结合起来, 这样每次修改文章后保存直接刷新浏览器就能查看效果了.</p>
+<hr/>
 <h2 id="elegant">四. 使用Elegant主题</h2>
 <p>Pelican默认的主题不好看, 这里我使用了Elegant主题. 在github上下载主题, 在这里我把主题放到了<code>myBlog</code>目录下, 也就是<code>content</code>的同级目录</p>
 <div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="c1">--recursive https://github.com/getpelican/pelican-themes</span>
@@ -191,6 +197,7 @@
 <div class="highlight"><pre><span></span><span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">"</span><span class="cp">{{</span> <span class="nv">SITEURL</span> <span class="cp">}}</span><span class="s">/theme/tipuesearch/jquery.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </pre></div>
 <p>这样搜索功能就完成了.</p>
+<hr/>
 <h2 id="github-pages_1">五. 上传到Github pages</h2>
 <p>进入<code>output</code>文件夹, 依次执行</p>
 <div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">init</span>
@@ -258,8 +265,10 @@
         Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
         Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
     </div>
-</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+</footer>            <!--<script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script> -->
+        <script src="/theme/js/jquery.min.js"></script>
+        <script src="/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {
