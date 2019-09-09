@@ -101,7 +101,7 @@
 <p><code>总结: 经典类都是DFS算法, 新式类除了在2.2版本中使用过BFS算法, 其他版本都是C3算法.</code></p>
 <h3 id="dfsbfs">先谈谈DFS和BFS</h3>
 <p>先看看以下菱形继承关系: </p>
-<p><img alt="继承关系图" src="/blog/images/2019-09-08-mro1.png"/></p>
+<p><img alt="菱形继承关系图" src="/blog/images/2019-09-08-mro1.png"/></p>
 <p>B和C继承自A, D继承自B, C. 代码如下:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -138,7 +138,7 @@
 <span class="n">d</span><span class="o">.</span><span class="n">who</span><span class="p">()</span> <span class="c1">#结果是'I am class A'</span>
 </pre></div>
 </td></tr></table>
-<p>按照DFS算法, 解析顺序是 <code>D-&gt;B-&gt;A-&gt;C-&gt;A</code>, 之前解析过的类A不会再解析, 所以最终是 <code>D-&gt;B-&gt;A-&gt;C</code>. 这样会出现什么问题呢? 你可以在C类中重写其父类A中的方法, 但是你永远访问不到你重写的访问, 因为解析到A就找到了, 所以这就是经典类使用DFS算法的缺陷. </p>
+<p>按照DFS算法, 解析顺序是 <code>D-&gt;B-&gt;A-&gt;C-&gt;A</code>, 之前解析过的类A不会再解析, 所以最终是 <code>D-&gt;B-&gt;A-&gt;C</code>. 这样会出现什么问题呢? 你可以在C类中重写其父类A中的方法, 但是你永远访问不到你重写的方法, 因为解析到A就找到了, 所以这就是经典类使用DFS算法的缺陷. </p>
 <p>再来说说2.2版本中新式类使用的BFS算法, 还是根据上图的菱形继承关系, 解析顺序是 <code>D-&gt;B-&gt;C-&gt;A</code>, BFS算法解决了经典类中DFS子类无法重写父类的问题, 但是这又引起了另一个问题, 看看正常的继承方式: </p>
 <p><img alt="正常继承关系图" src="/blog/images/2019-09-08-mro2.png"/> </p>
 <p>代码如下:</p>
