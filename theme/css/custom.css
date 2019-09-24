@@ -1,3 +1,29 @@
 .table-of-content .toc {
   font-size: 0.85em;
 }
+
+/* 代码段 */
+
+div.highlight {
+  font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+}
+
+div.highlight pre{
+  font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+}
+
+div.highlight pre span{
+  font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+}
+
+td.linenos {
+  font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+}
+
+td.linenos div.linenodiv{
+  font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+}
+
+td.linenos div.linenodiv pre{
+  font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+}
