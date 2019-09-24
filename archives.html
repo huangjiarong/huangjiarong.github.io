@@ -18,10 +18,7 @@
 <meta property="og:article:author" content="huangjiarong" />
         <title>All Posts · 黄佳荣的博客
 </title>
-        <!-- <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"> -->
-        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
@@ -51,7 +48,7 @@
                                 <li ><a href="/categories">Categories</a></li>
                                 <li ><a href="/tags">Tags</a></li>
                                 <li  class="active"><a href="/archives">Archives</a></li>
-                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                                <li><form class="navbar-search" action="/search" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                             </ul>
                         </div>
                     </div>
@@ -61,7 +58,6 @@
                 <div class="row-fluid">
                     <div class="span1"></div>
                     <div class="span10">
-
 <div class="row-fluid">
     <header class="page-header span10 offset2">
     <h1><a href="/archives">All Posts</a></h1>
@@ -73,38 +69,58 @@
                     <h2 id="2019"><a href="#2019">2019</a></h2>
 
 
-                        <article itemscope>
+                        <div itemscope>
 
-                <a href="/blog/2019_09_23/listview-source.html">Django源码解读之ListView  </a>
-                <time itemprop="dateCreated" datetime="2019-09-23T00:00:00+08:00">2019-09-23 星期一</time>
-                </article>
-
-
-                        <article itemscope>
-
-                <a href="/blog/2019_09_10/connet_to_remote_mysql.html">本地连接到远程服务器上的MySql数据库  </a>
-                <time itemprop="dateCreated" datetime="2019-09-10T00:00:00+08:00">2019-09-10 星期二</time>
-                </article>
+                <a href="/blog/2019_09_23/listview-source">
+                    Django源码解读之ListView
+                </a>
+                <time itemprop="dateCreated" datetime="2019-09-23T00:00:00+08:00">
+                    2019-09-23 星期一
+                </time>
+                </div>
 
 
-                        <article itemscope>
+                        <div itemscope>
 
-                <a href="/blog/2019_09_09/python-super.html">对Python中super的理解  </a>
-                <time itemprop="dateCreated" datetime="2019-09-09T00:00:00+08:00">2019-09-09 星期一</time>
-                </article>
+                <a href="/blog/2019_09_10/connet_to_remote_mysql">
+                    本地连接到远程服务器上的MySql数据库
+                </a>
+                <time itemprop="dateCreated" datetime="2019-09-10T00:00:00+08:00">
+                    2019-09-10 星期二
+                </time>
+                </div>
 
 
-                        <article itemscope>
+                        <div itemscope>
 
-                <a href="/blog/2019_09_08/python-mro.html">对Python中多继承的MRO的理解  </a>
-                <time itemprop="dateCreated" datetime="2019-09-08T00:00:00+08:00">2019-09-08 星期日</time>
-                </article>
+                <a href="/blog/2019_09_09/python-super">
+                    对Python中super的理解
+                </a>
+                <time itemprop="dateCreated" datetime="2019-09-09T00:00:00+08:00">
+                    2019-09-09 星期一
+                </time>
+                </div>
 
-                    <article itemscope class="last-entry-of-year">
 
-                <a href="/blog/2019_09_04/create-blog.html">Github Page和Pelican搭建个人博客,并使用主题Elegant  </a>
-                <time itemprop="dateCreated" datetime="2019-09-04T00:00:00+08:00">2019-09-04 星期三</time>
-                </article>
+                        <div itemscope>
+
+                <a href="/blog/2019_09_08/python-mro">
+                    对Python中多继承的MRO的理解
+                </a>
+                <time itemprop="dateCreated" datetime="2019-09-08T00:00:00+08:00">
+                    2019-09-08 星期日
+                </time>
+                </div>
+
+                    <div itemscope class="last-entry-of-year">
+
+                <a href="/blog/2019_09_04/create-blog">
+                    Github Page和Pelican搭建个人博客,并使用主题Elegant
+                </a>
+                <time itemprop="dateCreated" datetime="2019-09-04T00:00:00+08:00">
+                    2019-09-04 星期三
+                </time>
+                </div>
         </div>
     </div>
 </div>
@@ -118,16 +134,13 @@
 
 
 
+
     <div id="fpowered">
-        <!--
-        Powered by: <a href="https://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
         Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
-        -->
     </div>
-</footer>        <!--<script src="//code.jquery.com/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script> -->
-        <script src="/theme/js/jquery.min.js"></script>
-        <script src="/theme/js/bootstrap.min.js"></script>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {
