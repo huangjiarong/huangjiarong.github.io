@@ -596,10 +596,38 @@
 <p>可以看出TemplateResponseMixin中的get_template_names方法返回的是template_name属性或者抛出异常, 回到MultipleObjectTemplateResponseMixin中, 可以看出names这个列表添加了个路径, 默认的template_name_suffix属性是<code>_list</code>, 所以默认的路径是<code>你的app/model名_list.html</code>, 所以就算template_name不写也是可以渲染的, 只要路径正确. TemplateResponse接收的template为列表时, 将会一个个试着列表中的路径, 直到成功, 所以写了template_name将会先渲染template_name的路径, 失败后才渲染默认路径.</p>
 <hr/>
 <h2 id="4">4. 总结</h2>
-<div class="highlight"><pre><span></span>常用的方法和属性
-
-#<span class="o">!</span>
-# <span class="nv">model</span>, <span class="nv">queryset</span>属性都用于获取数据, 可重写<span class="nv">get_queryset</span>方法
+<p>常用的方法和属性</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31</pre></div></td><td class="code"><div class="highlight"><pre><span></span># <span class="nv">model</span>, <span class="nv">queryset</span>属性都用于获取数据, 可重写<span class="nv">get_queryset</span>方法
 <span class="nv">queryset</span> <span class="o">=</span> <span class="nv">None</span>
 <span class="nv">model</span> <span class="o">=</span> <span class="nv">None</span>
 
@@ -631,6 +659,7 @@
     # 添加上下文的代码
     <span class="k">return</span> <span class="nv">context</span>
 </pre></div>
+</td></tr></table>
 
 
             
