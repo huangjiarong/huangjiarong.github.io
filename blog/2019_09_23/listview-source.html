@@ -90,6 +90,7 @@
 <li><a href="#34-render_to_response">3.4 render_to_response渲染到前端</a></li>
 </ul>
 </li>
+<li><a href="#4">4. 总结</a></li>
 </ul>
 </div>
         </nav>
@@ -593,6 +594,43 @@
 </pre></div>
 </td></tr></table>
 <p>可以看出TemplateResponseMixin中的get_template_names方法返回的是template_name属性或者抛出异常, 回到MultipleObjectTemplateResponseMixin中, 可以看出names这个列表添加了个路径, 默认的template_name_suffix属性是<code>_list</code>, 所以默认的路径是<code>你的app/model名_list.html</code>, 所以就算template_name不写也是可以渲染的, 只要路径正确. TemplateResponse接收的template为列表时, 将会一个个试着列表中的路径, 直到成功, 所以写了template_name将会先渲染template_name的路径, 失败后才渲染默认路径.</p>
+<hr/>
+<h2 id="4">4. 总结</h2>
+<div class="highlight"><pre><span></span>常用的方法和属性
+
+#<span class="o">!</span>
+# <span class="nv">model</span>, <span class="nv">queryset</span>属性都用于获取数据, 可重写<span class="nv">get_queryset</span>方法
+<span class="nv">queryset</span> <span class="o">=</span> <span class="nv">None</span>
+<span class="nv">model</span> <span class="o">=</span> <span class="nv">None</span>
+
+# 是否允许为空列表
+<span class="nv">allow_empty</span> <span class="o">=</span> <span class="nv">True</span>
+
+# 渲染的模板名
+<span class="nv">template_name</span> <span class="o">=</span> <span class="nv">None</span>
+
+# 在上下文中对获取的<span class="nv">queryset</span>重命名, 默认的<span class="nv">queryset</span>名为<span class="nv">model</span>名<span class="nv">s_list</span>
+<span class="nv">context_object_name</span> <span class="o">=</span> <span class="nv">None</span>
+
+# 用于添加额外的上下文
+<span class="nv">extra_context</span> <span class="o">=</span> <span class="nv">None</span>
+
+# 排序
+<span class="nv">ordering</span> <span class="o">=</span> <span class="nv">None</span>
+
+# 分页的大小
+<span class="nv">paginate_by</span> <span class="o">=</span> <span class="nv">None</span>
+
+#重写方法获取<span class="nv">queryset</span>
+<span class="nv">def</span> <span class="nv">get_queryset</span><span class="ss">(</span><span class="nv">self</span><span class="ss">)</span>:
+    # 获取<span class="nv">queryset</span>的代码
+    <span class="k">return</span> <span class="nv">queryset</span>
+
+<span class="nv">def</span> <span class="nv">get_context_data</span><span class="ss">(</span><span class="nv">self</span>, <span class="o">*</span>, <span class="nv">object_list</span><span class="o">=</span><span class="nv">None</span>, <span class="o">**</span><span class="nv">kwargs</span><span class="ss">)</span>:
+    <span class="nv">context</span> <span class="o">=</span> <span class="nv">super</span><span class="ss">()</span>.<span class="nv">get_context_data</span><span class="ss">()</span>
+    # 添加上下文的代码
+    <span class="k">return</span> <span class="nv">context</span>
+</pre></div>
 
 
             
