@@ -627,11 +627,12 @@
 28
 29
 30
-31</pre></div></td><td class="code"><div class="highlight"><pre><span></span># <span class="nv">model</span>, <span class="nv">queryset</span>属性都用于获取数据, 可重写<span class="nv">get_queryset</span>方法
+31
+32</pre></div></td><td class="code"><div class="highlight"><pre><span></span># <span class="nv">model</span>, <span class="nv">queryset</span>属性都用于获取数据, 可重写<span class="nv">get_queryset</span>方法
 <span class="nv">queryset</span> <span class="o">=</span> <span class="nv">None</span>
 <span class="nv">model</span> <span class="o">=</span> <span class="nv">None</span>
 
-# 是否允许为空列表
+# 是否<span class="nv">queryset</span>为空
 <span class="nv">allow_empty</span> <span class="o">=</span> <span class="nv">True</span>
 
 # 渲染的模板名
@@ -654,6 +655,7 @@
     # 获取<span class="nv">queryset</span>的代码
     <span class="k">return</span> <span class="nv">queryset</span>
 
+#重写方法添加额外上下文
 <span class="nv">def</span> <span class="nv">get_context_data</span><span class="ss">(</span><span class="nv">self</span>, <span class="o">*</span>, <span class="nv">object_list</span><span class="o">=</span><span class="nv">None</span>, <span class="o">**</span><span class="nv">kwargs</span><span class="ss">)</span>:
     <span class="nv">context</span> <span class="o">=</span> <span class="nv">super</span><span class="ss">()</span>.<span class="nv">get_context_data</span><span class="ss">()</span>
     # 添加上下文的代码
