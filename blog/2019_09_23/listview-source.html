@@ -98,9 +98,9 @@
     <div class="span8 article-content">
             
             
-<p>本文以从url解析到数据渲染到前端这个流程来对Django的ListView源码进行解读, 通过本文可以更深入理解ListView中各个属性的用法.
-</p>
+<p>本文以从url解析到数据渲染到前端这个流程来对Django的ListView源码进行解读, 通过本文可以更深入理解ListView中各个属性的用法.</p>
 <p>环境: Django2.2版本</p>
+<hr/>
 <h2 id="1-listviewmro">1. ListView的方法解析顺序(MRO)和属性</h2>
 <p>MRO:</p>
 <ol>
@@ -628,7 +628,7 @@
 29
 30
 31
-32</pre></div></td><td class="code"><div class="highlight"><pre><span></span># <span class="nv">model</span>, <span class="nv">queryset</span>属性都用于获取数据, 可重写<span class="nv">get_queryset</span>方法
+32</pre></div></td><td class="code"><div class="highlight"><pre><span></span># <span class="nv">model</span>, <span class="nv">queryset</span>属性都用于获取数据
 <span class="nv">queryset</span> <span class="o">=</span> <span class="nv">None</span>
 <span class="nv">model</span> <span class="o">=</span> <span class="nv">None</span>
 

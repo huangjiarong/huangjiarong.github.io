@@ -27,3 +27,10 @@ td.linenos div.linenodiv{
 td.linenos div.linenodiv pre{
   font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
 }
+
+/* details中的折叠代码块 */
+div.span8.article-content details pre codeblock{
+  font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+}
+
+
