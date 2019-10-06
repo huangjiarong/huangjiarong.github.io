@@ -107,7 +107,7 @@
 <li>ListView</li>
 <li>MultipleObjectTemplateResponseMixin </li>
 <li>TemplateResponseMixin </li>
-<li>BaseViewList</li>
+<li>BaseListView</li>
 <li>MultipleObjectMixin </li>
 <li>ContextMixin </li>
 <li>View</li>
@@ -128,21 +128,21 @@
 13
 14
 15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">allow_empty</span> <span class="o">=</span> <span class="k">True</span>
-<span class="n">content_type</span> <span class="o">=</span> <span class="k">None</span>
-<span class="n">context_object_name</span> <span class="o">=</span> <span class="k">None</span>
-<span class="n">extra_context</span> <span class="o">=</span> <span class="k">None</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">allow_empty</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">content_type</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">context_object_name</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">extra_context</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">http_method_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'get'</span><span class="p">,</span> <span class="s1">'post'</span><span class="p">,</span> <span class="s1">'put'</span><span class="p">,</span> <span class="s1">'patch'</span><span class="p">,</span> <span class="s1">'delete'</span><span class="p">,</span> <span class="s1">'head'</span><span class="p">,</span> <span class="s1">'options'</span><span class="p">,</span> <span class="s1">'trace'</span><span class="p">]</span>
-<span class="n">model</span> <span class="o">=</span> <span class="k">None</span>
-<span class="n">ordering</span> <span class="o">=</span> <span class="k">None</span>
+<span class="n">model</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">ordering</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">page_kwarg</span> <span class="o">=</span> <span class="s1">'page'</span>
-<span class="n">paginate_by</span> <span class="o">=</span> <span class="k">None</span>
+<span class="n">paginate_by</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">paginate_orphans</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">paginator_class</span> <span class="o">=</span> <span class="o">&lt;</span><span class="k">class</span> <span class="s1">'django.core.paginator.Paginator'</span><span class="o">&gt;</span>
-<span class="n">queryset</span> <span class="o">=</span> <span class="k">None</span>
-<span class="n">response_class</span> <span class="o">=</span> <span class="o">&lt;</span><span class="k">class</span> <span class="s1">'django.template.response.TemplateResonse'</span><span class="o">&gt;</span>
-<span class="n">template_engine</span> <span class="o">=</span> <span class="k">None</span>
-<span class="n">template_name</span> <span class="o">=</span> <span class="k">None</span>
+<span class="n">paginator_class</span> <span class="o">=</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">'</span><span class="nc">django</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">paginator</span><span class="o">.</span><span class="n">Paginator</span><span class="s1">'&gt;</span>
+<span class="n">queryset</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">response_class</span> <span class="o">=</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">'</span><span class="nc">django</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">TemplateResonse</span><span class="s1">'&gt;</span>
+<span class="n">template_engine</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">template_name</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">template_name_suffix</span> <span class="o">=</span> <span class="s1">'_list'</span>
 </pre></div>
 </td></tr></table>
@@ -150,7 +150,6 @@
 <h2 id="2">2. 从路由解析说起</h2>
 <div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">path</span><span class="p">(</span><span class="n">r</span><span class="s1">''</span><span class="p">,</span> <span class="n">views</span><span class="p">.</span><span class="n">IndexListView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">'index'</span><span class="p">),</span>
-    <span class="o">#</span><span class="n">path</span><span class="p">(</span><span class="n">r</span><span class="s1">''</span><span class="p">,</span> <span class="n">views</span><span class="p">.</span><span class="k">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'index'</span><span class="p">),</span>
 <span class="p">]</span>
 </pre></div>
 <p>path第二个参数为函数, 我们写函数视图时直接传函数视图, 为什么写类视图就要写as_view()呢? as_view在父类View中, 下面是as_view的源码:</p>
@@ -628,38 +627,38 @@
 29
 30
 31
-32</pre></div></td><td class="code"><div class="highlight"><pre><span></span># <span class="nv">model</span>, <span class="nv">queryset</span>属性都用于获取数据
-<span class="nv">queryset</span> <span class="o">=</span> <span class="nv">None</span>
-<span class="nv">model</span> <span class="o">=</span> <span class="nv">None</span>
+32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># model, queryset属性都用于获取数据</span>
+<span class="n">queryset</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">model</span> <span class="o">=</span> <span class="bp">None</span>
 
-# 是否<span class="nv">queryset</span>为空
-<span class="nv">allow_empty</span> <span class="o">=</span> <span class="nv">True</span>
+<span class="c1"># 是否queryset为空</span>
+<span class="n">allow_empty</span> <span class="o">=</span> <span class="bp">True</span>
 
-# 渲染的模板名
-<span class="nv">template_name</span> <span class="o">=</span> <span class="nv">None</span>
+<span class="c1"># 渲染的模板名</span>
+<span class="n">template_name</span> <span class="o">=</span> <span class="bp">None</span>
 
-# 在上下文中对获取的<span class="nv">queryset</span>重命名, 默认的<span class="nv">queryset</span>名为<span class="nv">model</span>名<span class="nv">s_list</span>
-<span class="nv">context_object_name</span> <span class="o">=</span> <span class="nv">None</span>
+<span class="c1"># 在上下文中对获取的queryset重命名, 默认的queryset名为model名s_list</span>
+<span class="n">context_object_name</span> <span class="o">=</span> <span class="bp">None</span>
 
-# 用于添加额外的上下文
-<span class="nv">extra_context</span> <span class="o">=</span> <span class="nv">None</span>
+<span class="c1"># 用于添加额外的上下文</span>
+<span class="n">extra_context</span> <span class="o">=</span> <span class="bp">None</span>
 
-# 排序
-<span class="nv">ordering</span> <span class="o">=</span> <span class="nv">None</span>
+<span class="c1"># 排序</span>
+<span class="n">ordering</span> <span class="o">=</span> <span class="bp">None</span>
 
-# 分页的大小
-<span class="nv">paginate_by</span> <span class="o">=</span> <span class="nv">None</span>
+<span class="c1"># 分页的大小</span>
+<span class="n">paginate_by</span> <span class="o">=</span> <span class="bp">None</span>
 
-#重写方法获取<span class="nv">queryset</span>
-<span class="nv">def</span> <span class="nv">get_queryset</span><span class="ss">(</span><span class="nv">self</span><span class="ss">)</span>:
-    # 获取<span class="nv">queryset</span>的代码
-    <span class="k">return</span> <span class="nv">queryset</span>
+<span class="c1">#重写方法获取queryset</span>
+<span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># 获取queryset的代码</span>
+    <span class="k">return</span> <span class="n">queryset</span>
 
-#重写方法添加额外上下文
-<span class="nv">def</span> <span class="nv">get_context_data</span><span class="ss">(</span><span class="nv">self</span>, <span class="o">*</span>, <span class="nv">object_list</span><span class="o">=</span><span class="nv">None</span>, <span class="o">**</span><span class="nv">kwargs</span><span class="ss">)</span>:
-    <span class="nv">context</span> <span class="o">=</span> <span class="nv">super</span><span class="ss">()</span>.<span class="nv">get_context_data</span><span class="ss">()</span>
-    # 添加上下文的代码
-    <span class="k">return</span> <span class="nv">context</span>
+<span class="c1">#重写方法添加额外上下文</span>
+<span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">object_list</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
+    <span class="c1"># 添加上下文的代码</span>
+    <span class="k">return</span> <span class="n">context</span>
 </pre></div>
 </td></tr></table>
 
@@ -713,6 +712,7 @@
             <nav>
             <ul class="articles-timeline">
                 <li class="previous-article">« <a href="/blog/2019_09_10/connet_to_remote_mysql" title="Previous: 本地连接到远程服务器上的MySql数据库">本地连接到远程服务器上的MySql数据库</a></li>
+                <li class="next-article"><a href="/blog/2019_10_06/detailview-source" title="Next: Django源码解读之DetailView">Django源码解读之DetailView</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -727,7 +727,7 @@
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article">
                 <li><a href="/tags#yuan-ma-jie-du-ref">源码解读
-                    <span>1</span>
+                    <span>2</span>
 </a></li>
             </ul>
 <h4>Contact</h4>
