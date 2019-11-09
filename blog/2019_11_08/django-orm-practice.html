@@ -91,6 +91,7 @@
 <li><a href="#4">4. 查询"李"姓老师的数量</a></li>
 <li><a href="#5">5. 查询学过"张三"老师授课的同学的信息</a></li>
 <li><a href="#6">6. 查询没学过"张三"老师授课的同学的信息</a></li>
+<li><a href="#7-12">7. 查询学过编号为1并且也学过编号为2的课程的同学的信息</a></li>
 </ul>
 </li>
 <li><a href="#_5">未完待续</a></li>
@@ -102,7 +103,7 @@
             
             
 <h3 id="_1">前言</h3>
-<p>练习Django的ORM, 以及给出相应的sql语句加深对Django ORM的理解. 题目来自网上的Mysql练习, 自己用ORM实现.</p>
+<p>练习Django的ORM, 以及给出相应的sql语句加深对Django ORM的理解. 题目来自网上的Mysql练习, 自己用ORM实现. 我会在一些题目里写上自己的思路.</p>
 <p>使用Django的debug_tools第三方库显示相应的sql语句.相应的sql我会进行显示的优化.</p>
 <p>环境: Django2.2, MySql5.7</p>
 <hr/>
@@ -410,6 +411,58 @@
 </pre></div>
 </td></tr></table>
 <hr/>
+<h4 id="7-12">7. 查询学过编号为1并且也学过编号为2的课程的同学的信息</h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># 可参考题目1的答案, 使用两个SC的查询结果进行INNER JOIN.</span>
+<span class="c1"># 这里我换了另一种方法, 使用两个查询结果的交集, 再去Student表查询过滤.</span>
+<span class="c1"># 该方法有三条sql语句, 而采用题目1的方法只有一条sql语句, 性能方面</span>
+<span class="c1"># 是题目1采用执行原生sql比较好, 但是这里的这种方法开发时比较便捷.</span>
+<span class="n">student_1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SC</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">course_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s1">'student_id'</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="n">student_2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SC</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">course_id</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s1">'student_id'</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="c1"># 不转为set的话会报错, 报错提示mysql不支持交集方法.</span>
+<span class="n">result_id</span> <span class="o">=</span> <span class="n">student_1</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">student_2</span><span class="p">)</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">Student</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id__in</span><span class="o">=</span><span class="n">result_id</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+<p>对应的sql语句有三条:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">SC</span><span class="p">.</span><span class="n">student_id</span>
+  <span class="k">FROM</span> <span class="n">SC</span>
+ <span class="k">WHERE</span> <span class="n">SC</span><span class="p">.</span><span class="n">course_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">SELECT</span> <span class="n">SC</span><span class="p">.</span><span class="n">student_id</span>
+  <span class="k">FROM</span> <span class="n">SC</span>
+ <span class="k">WHERE</span> <span class="n">SC</span><span class="p">.</span><span class="n">course_id</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="k">SELECT</span> <span class="n">Student</span><span class="p">.</span><span class="n">id</span><span class="p">,</span>
+       <span class="n">Student</span><span class="p">.</span><span class="n">Sname</span><span class="p">,</span>
+       <span class="n">Student</span><span class="p">.</span><span class="n">Sage</span><span class="p">,</span>
+       <span class="n">Student</span><span class="p">.</span><span class="n">Ssex</span>
+  <span class="k">FROM</span> <span class="n">Student</span>
+ <span class="k">WHERE</span> <span class="n">Student</span><span class="p">.</span><span class="n">id</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
 <h2 id="_5">未完待续</h2>
 
 
