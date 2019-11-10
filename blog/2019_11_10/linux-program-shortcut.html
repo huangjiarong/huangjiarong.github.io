@@ -9,19 +9,19 @@
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary">
 
-<meta name="keywords" content="Git, Git, " />
+<meta name="keywords" content="Linux, Linux, " />
 
-<meta property="og:title" content="解决从Github上git clone速度慢的问题 "/>
-<meta property="og:url" content="/blog/2019_11_10/git-clone-speed" />
-<meta property="og:description" content="不改hosts解决从Github上git clone速度慢的问题" />
+<meta property="og:title" content="Linux下为程序生成快捷方式 "/>
+<meta property="og:url" content="/blog/2019_11_10/linux-program-shortcut" />
+<meta property="og:description" content="Linux下为程序生成快捷方式" />
 <meta property="og:site_name" content="黄佳荣的博客" />
 <meta property="og:article:author" content="黄佳荣" />
 <meta property="og:article:published_time" content="2019-11-10T00:00:00+08:00" />
 <meta property="og:article:modified_time" content="2019-11-10T00:00:00+08:00" />
-<meta name="twitter:title" content="解决从Github上git clone速度慢的问题 ">
-<meta name="twitter:description" content="不改hosts解决从Github上git clone速度慢的问题">
+<meta name="twitter:title" content="Linux下为程序生成快捷方式 ">
+<meta name="twitter:description" content="Linux下为程序生成快捷方式">
 
-        <title>解决从Github上git clone速度慢的问题  · 黄佳荣的博客
+        <title>Linux下为程序生成快捷方式  · 黄佳荣的博客
 </title>
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
@@ -68,8 +68,8 @@
 <div class="row-fluid">
     <header class="page-header span10 offset2">
         <h1>
-            <a href="/blog/2019_11_10/git-clone-speed">
-                解决从Github上git clone速度慢的问题
+            <a href="/blog/2019_11_10/linux-program-shortcut">
+                Linux下为程序生成快捷方式
             </a>
         </h1>
     </header>
@@ -81,8 +81,8 @@
         <h4>Contents</h4>
         <div class="toc">
 <ul>
-<li><a href="#_1">问题</a></li>
-<li><a href="#_2">解决</a></li>
+<li><a href="#_1">前言</a></li>
+<li><a href="#_2">配置</a></li>
 </ul>
 </div>
         </nav>
@@ -90,14 +90,33 @@
     <div class="span8 article-content">
             
             
-<h2 id="_1">问题</h2>
-<p>今天从github上下载个微信开发者工具, 奈何速度20k/s, 网上查了下许多都是说改hosts的, 但是我改了hosts速度还是那样, 看到一篇博文说可以用码云, 果然速度比之前的快了很多.</p>
-<h2 id="_2">解决</h2>
-<ol>
-<li>从github上把项目fork到自己的仓库, 一下子解决.</li>
-<li>码云建仓库时可以从github上导入自己的仓库, 导入可能需要一点点时间.</li>
-<li>执行<code>git clone 码云上的项目地址 --depth=1</code>, 速度快得飞起.</li>
-</ol>
+<h2 id="_1">前言</h2>
+<p>下载程序后每次执行都要运行对应的 .sh 文件, 这样很麻烦, 所以要生成快捷方式.</p>
+<p>环境: ubuntu 18.04</p>
+<hr/>
+<h2 id="_2">配置</h2>
+<p>在 /usr/share/applications/ 目录下新建一个 .desktop 文件:</p>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">vim</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">share</span><span class="o">/</span><span class="n">applications</span><span class="o">/</span><span class="n">wechat_web_devtools</span><span class="p">.</span><span class="n">desktop</span>
+</pre></div>
+<p>然后配置如下:</p>
+<div class="highlight"><pre><span></span><span class="k">[Desktop Entry]</span>
+
+<span class="na">Type</span><span class="o">=</span><span class="s">Application</span>
+
+<span class="na">Name</span><span class="o">=</span><span class="s">微信开发者工具</span>
+
+<span class="na">GenericName</span><span class="o">=</span><span class="s">微信开发者工具</span>
+
+<span class="na">Comment</span><span class="o">=</span><span class="s">linux版本的微信开发者工具</span>
+
+<span class="na">Exec</span><span class="o">=</span><span class="s">sh /home/jr/Downloads/wechat_web_devtools/bin/wxdt</span>
+
+<span class="na">Icon</span><span class="o">=</span><span class="s">/home/jr/wechat_web_devtools/dist/package.nw/static/image/logo@2x.png</span>
+
+<span class="na">Terminal</span><span class="o">=</span><span class="s">0</span>
+</pre></div>
+<p>其中 <code>Exec</code> 是对应的执行路径, <code>Icon</code> 是图标的路径.</p>
+<p>配置完执行在 /usr/share/application 目录下双击刚才的文件就可以运行程序了.</p>
 
 
             
@@ -119,7 +138,7 @@
                 <a class="accordion-toggle disqus-comment-count comment-count"
                    data-toggle="collapse"
                    data-parent="#accordion2"
-                   href="/blog/2019_11_10/git-clone-speed#comment_thread"
+                   href="/blog/2019_11_10/linux-program-shortcut#comment_thread"
                    id="comment-accordion-toggle">
                     Comments
                 </a>
@@ -130,7 +149,7 @@
 
                         <script src="https://utteranc.es/client.js"
         data-repo="huangjiarong/huangjiarong.github.io"
-        data-issue-term="/blog/2019_11_10/git-clone-speed"
+        data-issue-term="/blog/2019_11_10/linux-program-shortcut"
         data-label=""
         data-theme=""
         crossorigin="anonymous"
@@ -148,7 +167,8 @@
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="/blog/2019_11_10/linux-program-shortcut" title="Previous: Linux下为程序生成快捷方式">Linux下为程序生成快捷方式</a></li>
+                <li class="previous-article">« <a href="/blog/2019_11_08/django-orm-practice" title="Previous: Django ORM练习以及相应的Sql">Django ORM练习以及相应的Sql</a></li>
+                <li class="next-article"><a href="/blog/2019_11_10/git-clone-speed" title="Next: 解决从Github上git clone速度慢的问题">解决从Github上git clone速度慢的问题</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -159,10 +179,10 @@
             <time itemprop="dateCreated" datetime="2019-11-10T00:00:00+08:00">11月 10, 2019</time>
 
             <h4>Category</h4>
-            <a class="category-link" href="/categories#git-ref">Git</a>
+            <a class="category-link" href="/categories#linux-ref">Linux</a>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article">
-                <li><a href="/tags#git-ref">Git
+                <li><a href="/tags#linux-ref">Linux
                     <span>1</span>
 </a></li>
             </ul>
